@@ -1,0 +1,18 @@
+header {
+    margin-bottom: 30px;
+}
+
+.registration-form {
+    margin: 0 auto;
+    width: 45%;
+    padding: 10px;
+    background: lightgray;
+}
+
+.auth-btn {
+    width: 30%;
+}
+
+.href-auth {
+    color: black;
+}

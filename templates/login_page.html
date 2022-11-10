@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block body %}
+    <form class="registration-form" method="post" onsubmit="checkLogForm(event)">
+        <div class="mb-3">
+            <label for="phone_num" class="form-label">Phone number</label>
+            <input type="text" class="form-control" id="phone_num" name="phone_num" placeholder="8 800 800 80 80"
+                   maxlength="11">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="password">
+        </div>
+        <button class="btn btn-primary auth-btn" type="submit">Log In</button>
+        <a class="text-decoration-none href-auth" href="/register">If you haven't account</a>
+    </form>
+{% endblock %}
