@@ -54,6 +54,15 @@ class DataBase:
             print(e)
             return False
 
+    def get_all_product(self):
+        try:
+            self.cur.execute("SELECT * FROM products")
+            res = self.cur.fetchall()
+            return res
+        except Exception as e:
+            print(e)
+            return False
+
 
 class UserLogin:
     def fromDB(self, user_id, db):
@@ -75,3 +84,7 @@ class UserLogin:
 
     def get_id(self):
         return str(self.__user[0])
+
+    @property
+    def is_admin(self):
+        return self.__user[6]

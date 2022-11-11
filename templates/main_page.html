@@ -1,1 +1,42 @@
-{% extends 'base.html'%}
+{% extends 'base.html' %}
+
+{% block body %}
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">All products from Remova</h1>
+                <br>
+                <form role="search" method="get">
+                    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                </form>
+                {#здесь нужно добавить поисковую строку и выбор категорий#}
+            </div>
+        </div>
+    </section>
+    <div class="album py-5 bg-light">
+        <div class="container">
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 row-cols-md-4">
+                {% for product in products %}
+                    <div class="col">
+                        <a href="{{ url_for('product', id=product[6]) }}" class="link-dark"
+                           style="text-decoration: none;">
+                            <div class="card shadow-sm">
+                                <div style="overflow: hidden; height: 300px;">
+                                    <img src="{{ product[5] }}"
+                                         alt="{{ product[0] }}"
+                                         style="width: 100%; height: 100%; object-fit: cover">
+                                </div>
+                                <div class="card-body" style="background-color: lightgray">
+                                    <p class="card-text">{{ product[0] }}</p>
+                                    <p class="card-text">{{ product[4] }}</p>
+                                    <p class="card-text"><small>{{ product[1]|truncate(50) }}</small></p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

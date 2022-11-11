@@ -21,18 +21,23 @@ def hello_world():  # put application's code here
 
 @app.route('/main_page')
 def main_page():
+    products = db.get_all_product()
+    print(products)
     context = {
-        'title': 'Remova store'
+        'title': 'Remova store',
+        'products': products
     }
     return render_template('main_page.html', **context)
 
 
-@app.route('/season/<string:season_name>')
-def season_page(season_name):
-    context = {
-        'title': season_name
-    }
-    return render_template('main_page.html', **context)
+@app.route('/prodict/<int:id>')
+def product(id):
+    pass
+
+
+@app.route('/add_product')
+def add_product():
+    return render_template('add_product.html')
 
 
 @app.route('/profile')

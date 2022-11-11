@@ -31,7 +31,7 @@ if __name__ == '__main__':
                 category    varchar          NOT NULL,
                 cost        double precision NOT NULL,
                 image_url   text,
-                id          integer          NOT NULL UNIQUE,
+                id          serial           NOT NULL UNIQUE,
                 PRIMARY KEY (id)
             );
             
@@ -40,7 +40,7 @@ if __name__ == '__main__':
                 create_date date default (now()),
                 summa       double precision NOT NULL,
                 user_id     integer          NOT NULL,
-                id          integer          NOT NULL UNIQUE,
+                id          serial           NOT NULL UNIQUE,
                 PRIMARY KEY (id),
                 CONSTRAINT fk_user
                     FOREIGN KEY (user_id)
