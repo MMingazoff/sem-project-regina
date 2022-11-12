@@ -2,7 +2,7 @@
 {% block body %}
     <div class="container">
         <h1 class="mb-4">Orders</h1>
-        {% for order_num, create_date, products in orders %}
+        {% for order_num, create_date, total, products in orders %}
             <div class="card mb-4" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">Order #{{ order_num }}</h5>
@@ -17,14 +17,16 @@
                                 </div>
                                 <div class="col-md-7">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ title }}</h5>
+                                        <a href="{{ url_for('product', id=id) }}"
+                                           class="text-decoration-none card-title fs-5">{{ title }}</a>
                                         <p class="card-text mb-0">{{ amount }} x {{ price }}</p>
-                                        <p class="card-text mb-0"><small class="text-muted">{{ amount * price }}</small></p>
-                                        <a class="card-text mb-0" href="{{ id }}">{{ id }}</a>
+                                        <p class="card-text mb-0"><small class="text-muted">{{ amount * price }}</small>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
+                    <p class="card-text mb-0">Total: {{ total }}</p>
                     </p>
                 </div>
             </div>

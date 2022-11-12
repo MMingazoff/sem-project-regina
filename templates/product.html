@@ -32,8 +32,15 @@
         <br>
         <div style="padding-left: 18%">
             <button class="btn" style="width: 100px; background-color: lightgray">Buy</button>
-            <button class="btn" style="background-color: lightgray">Add to cart</button>
-            <button class="btn" style="background-color: lightgray">Add to favorite</button>
+            <a href="{{ url_for('add_to_cart', product_id=product[6]) }}?url_from={{ url_for('product', id=product[6]) }}"
+               class="btn btn-secondary">Add to cart</a>
+            {% if not product[7] %}
+                <a href="{{ url_for('add_to_favourite', product_id=product[6]) }}?url_from={{ url_for('product', id=product[6]) }}"
+                   class="btn btn-outline-danger">Add to favourite</a>
+            {% else %}
+                <a href="{{ url_for('delete_from_favourite', product_id=product[6]) }}?url_from={{ url_for('product', id=product[6]) }}"
+                   class="btn btn-danger">Delete from favourite</a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

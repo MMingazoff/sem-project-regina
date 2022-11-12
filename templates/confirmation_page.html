@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block body %}
+    <div class="container">
+        {% for id, title, description, amount, cost, image_url in products %}
+            <div class="card mb-4" style="width: 18rem;">
+                <a href="{{ url_for('product', id=id) }}" class="link-dark"
+                   style="text-decoration: none;">
+                    <img src="{{ image_url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ title }}</h5>
+                        <p class="card-text mb-4">{{ description }}</p>
+                        <p class="card-text mb-4">Price per item: {{ cost }}</p>
+                        <p class="card-text mb-4">Amount: {{ amount }}</p>
+                        <p class="card-text mb-4">Price: {{ cost * amount }}</p>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+        <p class="fs-4 py-5">Total: {{ total }}</p>
+        <p class="fs-4 py-5">Payment method: cash to courier</p>
+        <a href="{{ url_for('create_order') }}"
+           class="btn btn-secondary">Create order</a>
+    </div>
+{% endblock %}

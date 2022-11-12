@@ -88,7 +88,7 @@ class DataBase:
             self.cur.execute("SELECT * FROM orders WHERE user_id = %s" % user_id)
             orders = self.cur.fetchall()
             res = []
-            for create_date, _, _, id in orders:
+            for create_date, total, _, id in orders:
                 self.cur.execute(
                     "SELECT title, amount, cost, image_url, id FROM products JOIN "
                     "(SELECT product_id, order_id, count(*) amount "
@@ -96,11 +96,23 @@ class DataBase:
                     "WHERE order_id = %s" % id
                 )
                 products = self.cur.fetchall()
-                res.append(tuple((id, create_date, products)))
+                res.append(tuple((id, create_date, total, products)))
             return res
         except Exception as e:
             print(e)
             return False
+
+    def create_order(self, user_id):
+        # TODO('сделать id serial')
+        products, total = self.get_cart_with_total(user_id)
+        self.cur.execute("SELECT id FROM orders ORDER BY id DESC")
+        last_id = self.cur.fetchone()[0]
+        self.cur.execute("INSERT INTO orders (summa, user_id, id) "
+                         "VALUES (%s, %s, %s)" % (total, user_id, last_id + 1))
+        for product in products:
+            for _ in range(product[3]):
+                self.cur.execute("INSERT INTO purchases (product_id, order_id) "
+                                 "VALUES (%s, %s)" % (product[0], last_id + 1))
 
     def get_all_products(self, user_id):
         try:
@@ -136,6 +148,11 @@ class DataBase:
             print(e)
             return False
 
+    def is_product_favourite(self, product_id):
+        self.cur.execute("SELECT * FROM favorites WHERE product_id = %s" % product_id)
+        res = self.cur.fetchone()
+        return bool(res)
+
     def add_to_favourite(self, user_id, product_id):
         try:
             self.cur.execute("INSERT INTO favorites (user_id, product_id) "
@@ -147,6 +164,47 @@ class DataBase:
         try:
             self.cur.execute("DELETE FROM favorites "
                              "WHERE user_id = %s and product_id = %s" % (user_id, product_id))
+        except Exception as e:
+            print(e)
+
+    def get_cart(self, user_id):
+        try:
+            self.cur.execute("SELECT id, title, description, amount, cost, image_url FROM products JOIN "
+                             "(SELECT user_id, product_id, count(*) amount FROM cart GROUP BY user_id, product_id) c "
+                             "ON products.id = c.product_id "
+                             "WHERE user_id = %s" % user_id)
+            res = self.cur.fetchall()
+            if not res:
+                return False
+            return res
+        except Exception as e:
+            print(e)
+            return False
+
+    def clear_cart(self, user_id):
+        self.cur.execute("DELETE FROM cart WHERE user_id = %s" % user_id)
+
+    def get_cart_with_total(self, user_id):
+        products = self.get_cart(user_id)
+        total = 0
+        if products:
+            for _, _, _, amount, cost, _ in products:
+                total += amount * cost
+        return products, total
+
+    def add_to_cart(self, user_id, product_id):
+        try:
+            self.cur.execute("INSERT INTO cart (user_id, product_id) "
+                             "VALUES (%s, %s)" % (user_id, product_id))
+        except Exception as e:
+            print(e)
+
+    def delete_from_cart(self, user_id, product_id):
+        try:
+            self.cur.execute("DELETE FROM cart "
+                             "WHERE user_id = %s and product_id = %s "
+                             "and ctid = (select min(ctid) from cart "
+                             "where user_id = %s and product_id = %s);" % (user_id, product_id, user_id, product_id))
         except Exception as e:
             print(e)
 
@@ -181,7 +239,7 @@ class DataBase:
         try:
             print('updating')
             self.cur.execute(
-                "UPDATE users SET first_name=%s, last_name=%s WHERE id=%s" % (first_name, last_name, user_id))
+                "UPDATE users SET first_name='%s', last_name='%s' WHERE id=%s" % (first_name, last_name, user_id))
         except Exception as e:
             print(e)
 
