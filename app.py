@@ -49,7 +49,7 @@ def add_product():
 @app.route('/product/<int:id>/edit')
 @login_required
 def edit_product(id):
-    user = db.get_user_by_id(current_user.get_id)
+    user = db.get_user_by_id(current_user.get_id())
     if user[6]:
         product = db.get_product_by_id(id)
         context = {

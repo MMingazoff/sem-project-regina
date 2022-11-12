@@ -5,11 +5,11 @@ import psycopg2
 class DataBase:
     def __init__(self):
         self.con = psycopg2.connect(
-            dbname="remova_store",
-            user="postgres",
-            password="2010",
-            host="localhost",
-            port=5432
+            dbname='regina',
+            user='postgres',
+            password='marat2003',
+            host='localhost',
+            port='5432'
         )
         self.con.autocommit = True
         self.cur = self.con.cursor()
@@ -18,9 +18,6 @@ class DataBase:
         try:
             self.cur.execute(f"SELECT * FROM users WHERE id = {user_id} LIMIT 1")
             res = self.cur.fetchone()
-            if not res:
-                print("User not find")
-                return False
             return res
         except Exception as exc:
             print(str(exc))
