@@ -2,10 +2,33 @@
 {% block body %}
     <br><br><br>
     <div class="container">
-        <h3>{{ first_name }}</h3>
-        <h3>{{ last_name }}</h3>
-        <h3>{{ email }}</h3>
-        <h3>{{ phone_num }}</h3>
+        <form class="edit-profile-form" method="post">
+            <div class="mb-3 row">
+                <label for="first_name" class="col-sm-2 col-form-label">First name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ first_name }}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="last_name" class="col-sm-2 col-form-label">Last name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ last_name }}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="email" class="col-sm-2 col-form-label">Email address</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" id="email" value="{{ email }}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="phone_num" class="col-sm-2 col-form-label">Phone number</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" id="phone_num" value="{{ phone_num }}">
+                </div>
+            </div>
+            <button class="btn btn-success" type="submit">Confirm change</button>
+        </form>
         <a class="btn btn-secondary" type="submit"
            onclick="location.href = '{{ url_for("logout") }}'">Log Out</a>
     </div>

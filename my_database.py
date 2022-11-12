@@ -5,10 +5,10 @@ import psycopg2
 class DataBase:
     def __init__(self):
         self.con = psycopg2.connect(
-            dbname="#ur name",
-            user="#ur user",
-            password="#ur password",
-            host="#ur localhost",
+            dbname="remova_store",
+            user="postgres",
+            password="2010",
+            host="localhost",
             port=5432
         )
         self.con.autocommit = True
@@ -162,7 +162,7 @@ class DataBase:
         for i in range(10):
             self.cur.execute("insert into orders (summa, user_id, id) "
                              "values ('%d', 1, '%d')"
-                             % (i*100, i))
+                             % (i * 100, i))
 
     def gen_purchs(self):
         """Потом удалить"""
@@ -176,6 +176,14 @@ class DataBase:
             self.cur.execute("insert into purchases (product_id, order_id) "
                              "values ('%d', '%d')"
                              % (random.randint(0, 9), i))
+
+    def update_names(self, user_id, first_name, last_name):
+        try:
+            print('updating')
+            self.cur.execute(
+                "UPDATE users SET first_name=%s, last_name=%s WHERE id=%s" % (first_name, last_name, user_id))
+        except Exception as e:
+            print(e)
 
 
 class UserLogin:
@@ -199,7 +207,7 @@ class UserLogin:
     def is_anonymous(self):
         return False
 
-    @property
+    # @property
     def get_id(self):
         return str(self.__user[0])
 

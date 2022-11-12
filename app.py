@@ -67,9 +67,13 @@ def delete_product(id):
     return redirect(url_for('product', id=id))
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile_page():
+    if request.method == 'POST':
+        new_first_name = request.form.get('first_name')
+        new_last_name = request.form.get('last_name')
+        db.update_names(current_user.get_id(), new_first_name, new_last_name)
     user = db.get_user_by_id(current_user.get_id())
     context = {
         'title': 'Profile',
