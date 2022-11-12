@@ -64,6 +64,25 @@ class DataBase:
             print(e)
             return False
 
+    def get_product_by_id(self, id):
+        try:
+            self.cur.execute("SELECT * FROM products WHERE id = '%s'" % id)
+            res = self.cur.fetchone()
+            if not res:
+                return False
+            return res
+
+        except Exception as e:
+            print(e)
+            return False
+
+    def delete_product_by_id(self, id):
+        try:
+            self.cur.execute("DELETE FROM products WHERE id = '%s'" % id)
+        except Exception as e:
+            print(e)
+            return False
+
     def get_all_orders(self, user_id):
         try:
             self.cur.execute("SELECT * FROM orders WHERE user_id = %s" % user_id)
@@ -168,15 +187,19 @@ class UserLogin:
         self.__user = user
         return self
 
+    @property
     def is_authenticated(self):
         return True
 
+    @property
     def is_active(self):
         return True
 
+    @property
     def is_anonymous(self):
         return False
 
+    @property
     def get_id(self):
         return str(self.__user[0])
 

@@ -21,8 +21,7 @@ def hello_world():  # put application's code here
 
 @app.route('/main_page')
 def main_page():
-    user_id = None if current_user.is_anonymous() else current_user.get_id()
-    products = db.get_all_products(user_id)
+    products = db.get_all_product()
     context = {
         'title': 'Remova store',
         'products': products
@@ -32,12 +31,40 @@ def main_page():
 
 @app.route('/product/<int:id>')
 def product(id):
-    pass
+    product = db.get_product_by_id(id)
+    context = {
+        'product': product,
+    }
+
+    return render_template('product.html', **context)
 
 
 @app.route('/add_product')
 def add_product():
     return render_template('add_product.html')
+
+
+@app.route('/product/<int:id>/edit')
+@login_required
+def edit_product(id):
+    user = db.get_user_by_id(current_user.get_id)
+    if user[6]:
+        product = db.get_product_by_id(id)
+        context = {
+            'product': product,
+        }
+        return render_template('edit_product.html', **context)
+    return redirect(url_for('product', id=id))
+
+
+@app.route('/product/<int:id>/delete', methods=['GET'])
+@login_required
+def delete_product(id):
+    user = db.get_user_by_id(current_user.get_id)
+    if user[6]:
+        db.delete_product_by_id(id)
+        return redirect(url_for('main_page'))
+    return redirect(url_for('product', id=id))
 
 
 @app.route('/profile')

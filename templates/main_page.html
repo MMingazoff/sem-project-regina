@@ -1,19 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <section class="text-center container">
-        <div class="row py-lg-5">
-            <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">All products from Remova</h1>
-                <br>
-                <form role="search" method="get">
-                    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-                </form>
-                {#здесь нужно добавить поисковую строку и выбор категорий#}
-            </div>
-        </div>
-    </section>
-    <div class="album py-5 bg-light">
+    <div class="album py-5">
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 row-cols-md-4">
                 {% for product in products %}
@@ -26,18 +14,21 @@
                                          alt="{{ product[0] }}"
                                          style="width: 100%; height: 100%; object-fit: cover">
                                 </div>
-                                <div class="card-body" style="background-color: lightgray">
-                                    <p class="card-text">{{ product[0] }}</p>
-                                    <p class="card-text">{{ product[4] }}</p>
-                                    <p class="card-text mb-4"><small>{{ product[1]|truncate(50) }}</small></p>
-                                    {% if not product[7] %}
-                                        <a href="{{ url_for('add_to_favourite', product_id=product[6]) }}?url_from={{ url_for('main_page') }}"
-                                           class="btn btn-outline-danger fav">add to fav</a>
-                                    {% else %}
-                                        <a href="{{ url_for('delete_from_favourite', product_id=product[6]) }}?url_from={{ url_for('main_page') }}"
-                                           class="btn btn-danger fav">delete from fav</a>
-                                    {% endif %}
-                                </div>
+                                <center>
+                                    <div class="card-body" style="background-color: lightgray">
+                                        <p class="card-text">{{ product[0] }}</p>
+                                        <p class="card-text">{{ product[4] }}</p>
+                                        <div style="padding-top: 10px;">
+                                            {% if not product[7] %}
+                                                <a href="{{ url_for('add_to_favourite', product_id=product[6]) }}?url_from={{ url_for('main_page') }}"
+                                                   class="btn btn-outline-danger fav">add to fav</a>
+                                            {% else %}
+                                                <a href="{{ url_for('delete_from_favourite', product_id=product[6]) }}?url_from={{ url_for('main_page') }}"
+                                                   class="btn btn-danger fav">delete from fav</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </center>
                             </div>
                         </a>
                     </div>

@@ -23,3 +23,9 @@ function checkLogForm(event) {
         event.preventDefault()
     }
 }
+function checkDelete(id) {
+  let text = "Are you sure you want to delete the product?";
+  if (confirm(text)) {
+      window.location.replace('/product/' + id + '/delete')
+  }
+}
