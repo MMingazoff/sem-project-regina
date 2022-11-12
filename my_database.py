@@ -5,11 +5,11 @@ import psycopg2
 class DataBase:
     def __init__(self):
         self.con = psycopg2.connect(
-            dbname="remova_store",
+            dbname="regina",
             user="postgres",
-            password="2010",
+            password="29853461",
             host="localhost",
-            port=5432
+            port='5432'
         )
         self.con.autocommit = True
         self.cur = self.con.cursor()
@@ -71,6 +71,25 @@ class DataBase:
             if not res:
                 return False
             return res
+
+        except Exception as e:
+            print(e)
+            return False
+
+    def add_product(self, title, desc, gen, cat, cost, img_url):
+        try:
+            self.cur.execute("INSERT INTO products VALUES (%s, %s, %s, %s, %s, %s)",
+                             (title, desc, gen, cat, cost, img_url))
+        except Exception as e:
+            print(e)
+            return False
+
+    def edit_product(self, title, desc, gen, cat, cost, img_url, id):
+        try:
+            self.cur.execute(
+                "UPDATE products SET (title, description, gender, category, cost, image_url) ="
+                "(%s, %s, %s, %s, %s, %s) WHERE id = %s",
+                (title, desc, gen, cat, cost, img_url, id))
 
         except Exception as e:
             print(e)

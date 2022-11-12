@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response, redirect, url_for, session
+from flask import Flask, render_template, request, make_response, redirect, url_for, session, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from my_database import DataBase, UserLogin
 
@@ -39,28 +39,56 @@ def product(id):
     return render_template('product.html', **context)
 
 
-@app.route('/add_product')
+@app.route('/add_product', methods=['GET', 'POST'])
+@login_required
 def add_product():
-    return render_template('add_product.html')
+    is_admin = current_user.is_admin
+    if is_admin:
+        if request.method == 'POST':
+            title = request.form.get('title')
+            desc = request.form.get('description')
+            gen = request.form.get('gender')
+            cat = request.form.get('category')
+            cost = request.form.get('cost')
+            img_url = request.form.get('img_url')
+
+            db.add_product(title, desc, gen, cat, cost, img_url)
+
+            return redirect(url_for('main_page'))
+
+        return render_template('add_product.html')
 
 
-@app.route('/product/<int:id>/edit')
+@app.route('/product/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_product(id):
-    user = db.get_user_by_id(current_user.get_id)
-    if user[6]:
+    is_admin = current_user.is_admin
+    if is_admin:
+        if request.method == 'POST':
+            title = request.form.get('title')
+            desc = request.form.get('description')
+            gen = request.form.get('gender')
+            cat = request.form.get('category')
+            cost = request.form.get('cost')
+            img_url = request.form.get('img_url')
+
+            db.edit_product(title, desc, gen, cat, cost, img_url, id)
+
+            return redirect(url_for('product', id=id))
+
         product = db.get_product_by_id(id)
+
         context = {
             'product': product,
         }
+
         return render_template('edit_product.html', **context)
-    return redirect(url_for('product', id=id))
 
 
 @app.route('/product/<int:id>/delete', methods=['GET'])
 @login_required
 def delete_product(id):
-    user = db.get_user_by_id(current_user.get_id)
+    user = db.get_user_by_id(current_user.get_id())
     if user[6]:
         db.delete_product_by_id(id)
         return redirect(url_for('main_page'))
