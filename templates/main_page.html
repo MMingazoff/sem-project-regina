@@ -21,10 +21,10 @@
                                         <div style="padding-top: 10px;">
                                             {% if not product[7] %}
                                                 <a href="{{ url_for('add_to_favourite', product_id=product[6]) }}?url_from={{ url_for('main_page') }}"
-                                                   class="btn btn-outline-danger fav">add to fav</a>
+                                                   class="btn btn-outline-danger">add to fav</a>
                                             {% else %}
                                                 <a href="{{ url_for('delete_from_favourite', product_id=product[6]) }}?url_from={{ url_for('main_page') }}"
-                                                   class="btn btn-danger fav">delete from fav</a>
+                                                   class="btn btn-danger">delete from fav</a>
                                             {% endif %}
                                         </div>
                                     </div>

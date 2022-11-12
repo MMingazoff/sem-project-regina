@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response, redirect, url_for, session, flash
+from flask import Flask, render_template, request, make_response, redirect, url_for, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from my_database import DataBase, UserLogin
 
@@ -21,7 +21,8 @@ def hello_world():  # put application's code here
 
 @app.route('/main_page')
 def main_page():
-    products = db.get_all_product()
+    user_id = None if current_user.is_anonymous else current_user.get_id()
+    products = db.get_all_products(user_id)
     context = {
         'title': 'Remova store',
         'products': products
@@ -32,8 +33,10 @@ def main_page():
 @app.route('/product/<int:id>')
 def product(id):
     product = db.get_product_by_id(id)
+    product = list(product)
+    product.append(db.is_product_favourite(id))
     context = {
-        'product': product,
+        'product': tuple(product),
     }
 
     return render_template('product.html', **context)
@@ -123,10 +126,43 @@ def logout():
 @app.route('/cart')
 @login_required
 def cart_page():
+    products, total = db.get_cart_with_total(current_user.get_id())
     context = {
-        'title': 'Cart'
+        'title': 'Cart',
+        'products': products,
+        'total': total
     }
-    return render_template('main_page.html', **context)
+    return render_template('cart_page.html', **context)
+
+
+@app.route('/cart/order_confirmation')
+@login_required
+def order_confirmation():
+    products, total = db.get_cart_with_total(current_user.get_id())
+    context = {
+        'title': 'Cart',
+        'products': products,
+        'total': total
+    }
+    if not products:
+        return redirect(url_for('main_page'))
+    return render_template('confirmation_page.html', **context)
+
+
+@app.route('/product/<int:product_id>/add_to_cart')
+@login_required
+def add_to_cart(product_id):
+    db.add_to_cart(current_user.get_id(), product_id)
+    url_from = request.args.get('url_from')
+    return redirect(url_from)
+
+
+@app.route('/product/<int:product_id>/delete_from_cart')
+@login_required
+def delete_from_cart(product_id):
+    db.delete_from_cart(current_user.get_id(), product_id)
+    url_from = request.args.get('url_from')
+    return redirect(url_from)
 
 
 @app.route('/orders')
@@ -139,6 +175,14 @@ def orders_page():
     return render_template('orders_page.html', **context)
 
 
+@app.route('/orders/create_order')
+@login_required
+def create_order():
+    db.create_order(current_user.get_id())
+    db.clear_cart(current_user.get_id())
+    return redirect(url_for('orders_page'))
+
+
 @app.route('/favourite')
 @login_required
 def favourite_page():
@@ -149,7 +193,7 @@ def favourite_page():
     return render_template('favourite_page.html', **context)
 
 
-@app.route('/add_to_favourite/<int:product_id>')
+@app.route('/product/<int:product_id>/add_to_favourite')
 @login_required
 def add_to_favourite(product_id):
     db.add_to_favourite(current_user.get_id(), product_id)
@@ -157,7 +201,7 @@ def add_to_favourite(product_id):
     return redirect(url_from)
 
 
-@app.route('/delete_from_favourite/<int:product_id>')
+@app.route('/product/<int:product_id>/delete_from_favourite')
 @login_required
 def delete_from_favourite(product_id):
     db.delete_from_favourite(current_user.get_id(), product_id)
