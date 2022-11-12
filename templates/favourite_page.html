@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block body %}
+    <div class="container">
+        {% if products %}
+            {% for id, title, description in products %}
+                <div class="card mb-4" style="width: 18rem;">
+                    <a href="{{ url_for('product', id=id) }}" class="link-dark"
+                       style="text-decoration: none;">
+                        <img src=".." class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ title }}</h5>
+                            <p class="card-text mb-4">{{ description }}</p>
+                            <a href="{{ url_for('delete_from_favourite', product_id=id) }}?url_from={{ url_for('favourite_page') }}"
+                               class="btn btn-danger fav">delete from fav</a>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="fs-4 py-5">You have no favourite products</p>
+        {% endif %}
+    </div>
+{% endblock %}

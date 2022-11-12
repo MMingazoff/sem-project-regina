@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <section class="py-5 text-center container">
+    <section class="text-center container">
         <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
                 <h1 class="fw-light">All products from Remova</h1>
@@ -15,7 +15,6 @@
     </section>
     <div class="album py-5 bg-light">
         <div class="container">
-
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 row-cols-md-4">
                 {% for product in products %}
                     <div class="col">
@@ -30,7 +29,14 @@
                                 <div class="card-body" style="background-color: lightgray">
                                     <p class="card-text">{{ product[0] }}</p>
                                     <p class="card-text">{{ product[4] }}</p>
-                                    <p class="card-text"><small>{{ product[1]|truncate(50) }}</small></p>
+                                    <p class="card-text mb-4"><small>{{ product[1]|truncate(50) }}</small></p>
+                                    {% if not product[7] %}
+                                        <a href="{{ url_for('add_to_favourite', product_id=product[6]) }}?url_from={{ url_for('main_page') }}"
+                                           class="btn btn-outline-danger fav">add to fav</a>
+                                    {% else %}
+                                        <a href="{{ url_for('delete_from_favourite', product_id=product[6]) }}?url_from={{ url_for('main_page') }}"
+                                           class="btn btn-danger fav">delete from fav</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </a>
@@ -39,4 +45,15 @@
             </div>
         </div>
     </div>
+    <script>
+        {#  взял со стаковерфлоу, думаю лучше убрать  #}
+        document.addEventListener("DOMContentLoaded", function(event) {
+            const scrollpos = localStorage.getItem('scrollpos');
+            if (scrollpos) window.scrollTo(0, scrollpos);
+        });
+
+        window.onbeforeunload = function(e) {
+            localStorage.setItem('scrollpos', window.scrollY);
+        };
+    </script>
 {% endblock %}

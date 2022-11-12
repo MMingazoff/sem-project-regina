@@ -21,8 +21,8 @@ def hello_world():  # put application's code here
 
 @app.route('/main_page')
 def main_page():
-    products = db.get_all_product()
-    print(products)
+    user_id = None if current_user.is_anonymous() else current_user.get_id()
+    products = db.get_all_products(user_id)
     context = {
         'title': 'Remova store',
         'products': products
@@ -30,7 +30,7 @@ def main_page():
     return render_template('main_page.html', **context)
 
 
-@app.route('/prodict/<int:id>')
+@app.route('/product/<int:id>')
 def product(id):
     pass
 
@@ -74,18 +74,36 @@ def cart_page():
 @login_required
 def orders_page():
     context = {
-        'title': 'Orders'
+        'title': 'Orders',
+        'orders': db.get_all_orders(current_user.get_id())
     }
-    return render_template('main_page.html', **context)
+    return render_template('orders_page.html', **context)
 
 
 @app.route('/favourite')
 @login_required
 def favourite_page():
     context = {
-        'title': 'Favourite'
+        'title': 'Favourite',
+        'products': db.get_all_favourites(current_user.get_id())
     }
-    return render_template('main_page.html', **context)
+    return render_template('favourite_page.html', **context)
+
+
+@app.route('/add_to_favourite/<int:product_id>')
+@login_required
+def add_to_favourite(product_id):
+    db.add_to_favourite(current_user.get_id(), product_id)
+    url_from = request.args.get('url_from')
+    return redirect(url_from)
+
+
+@app.route('/delete_from_favourite/<int:product_id>')
+@login_required
+def delete_from_favourite(product_id):
+    db.delete_from_favourite(current_user.get_id(), product_id)
+    url_from = request.args.get('url_from')
+    return redirect(url_from)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -118,7 +136,7 @@ def login_page():
         phone_num = request.form.get('phone_num')
         password = request.form.get('password')
         user = db.get_user_by_email(email)
-        if user and user[4] == phone_num and user[5]==password:
+        if user and user[4] == phone_num and user[5] == password:
             user_login = UserLogin().create(user)
             login_user(user_login, remember=True)
             return redirect('main_page')
