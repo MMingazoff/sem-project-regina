@@ -21,11 +21,29 @@ def hello_world():  # put application's code here
 
 @app.route('/main_page')
 def main_page():
-    user_id = None if current_user.is_anonymous else current_user.get_id()
-    products = db.get_all_products(user_id)
+    # user_id = None if current_user.is_anonymous else current_user.get_id()
+    categories = ['Sweater', 'Hoodie', 'Pants', 'Jeans', 'Accessories', 'Shoes', 'T-shirt', 'Longsleeve',
+                  'Jacket',
+                  'Coat', 'Underwear', 'Skirt', 'Dress', 'Swimming', 'Other']
+    genders = ['male', 'female']
+    sort_params = (['Sort by price (low->high)', 'cost'],
+                   ['Sort by name (low->high)', 'title'],
+                   ['Sort by price (high->low)', 'cost desc'],
+                   ['Sort by name (high->low)', 'title desc'])
+    sort_parameter = request.args.get('sort_parameter')
+    gender_parameter = [request.args.get('gender_parameter')]
+    if gender_parameter[0] is None:
+        gender_parameter = genders
+    category_parameter = [request.args.get('category_parameter')]
+    if category_parameter[0] is None:
+        category_parameter = categories
+    products = db.get_all_product(gender_parameter, category_parameter, sort_parameter)
     context = {
         'title': 'Remova store',
-        'products': products
+        'categories': categories,
+        'products': products,
+        'genders': genders,
+        'sort_params': sort_params
     }
     return render_template('main_page.html', **context)
 
@@ -58,8 +76,14 @@ def add_product():
             db.add_product(title, desc, gen, cat, cost, img_url)
 
             return redirect(url_for('main_page'))
-
-        return render_template('add_product.html')
+        else:
+            categories = ('Sweater', 'Hoodie', 'Pants', 'Jeans', 'Accessories', 'Shoes', 'T-shirt', 'Longsleeve',
+                          'Jacket',
+                          'Coat', 'Underwear', 'Skirt', 'Dress', 'Swimming', 'Other')
+            context = {
+                'categories': categories,
+            }
+            return render_template('add_product.html', **context)
 
 
 @app.route('/product/<int:id>/edit', methods=['GET', 'POST'])
@@ -80,9 +104,12 @@ def edit_product(id):
             return redirect(url_for('product', id=id))
 
         product = db.get_product_by_id(id)
-
+        categories = ('Sweater', 'Hoodie', 'Pants', 'Jeans', 'Accessories', 'Shoes', 'T-shirt', 'Longsleeve',
+                      'Jacket',
+                      'Coat', 'Underwear', 'Skirt', 'Dress', 'Swimming', 'Other')
         context = {
             'product': product,
+            'categories': categories
         }
 
         return render_template('edit_product.html', **context)
