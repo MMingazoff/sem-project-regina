@@ -115,11 +115,10 @@ def edit_product(id):
         return render_template('edit_product.html', **context)
 
 
-@app.route('/product/<int:id>/delete', methods=['GET'])
+@app.route('/product/<int:id>/delete')
 @login_required
 def delete_product(id):
-    user = db.get_user_by_id(current_user.get_id())
-    if user[6]:
+    if current_user.is_admin:
         db.delete_product_by_id(id)
         return redirect(url_for('main_page'))
     return redirect(url_for('product', id=id))
