@@ -88,7 +88,7 @@ def edit_product(id):
         return render_template('edit_product.html', **context)
 
 
-@app.route('/product/<int:id>/delete', methods=['GET'])
+@app.route('/product/<int:id>/delete')
 @login_required
 def delete_product(id):
     user = db.get_user_by_id(current_user.get_id())
