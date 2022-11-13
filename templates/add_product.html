@@ -26,10 +26,9 @@
             {#Узнать, какие категории нужны, и откуда их брать#}
             <select id="category" name="category" class="form-control" required="required">
                 <option value=""></option>
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="fiat">Fiat</option>
-                <option value="audi">Audi</option>
+                {% for category in categories %}
+                    <option value="{{category}}">{{ category }}</option>
+                {% endfor %}
             </select>
         </div>
         <br>
@@ -39,7 +38,7 @@
         </div>
         <br>
         <div class="form-group"><label for="img_url" class="form-label">Image url</label>
-            <input type="url" id="img_url" class="form-control" name="img_url" value="{{ product[5] }}">
+            <input type="url" id="img_url" class="form-control" name="img_url">
         </div>
         <hr>
         <center>

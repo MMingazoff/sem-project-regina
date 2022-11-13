@@ -5,9 +5,9 @@ import psycopg2
 class DataBase:
     def __init__(self):
         self.con = psycopg2.connect(
-            dbname='regina',
+            dbname='remova_store',
             user='postgres',
-            password='marat2003',
+            password='#ur psw',
             host='localhost',
             port='5432'
         )
@@ -52,9 +52,28 @@ class DataBase:
             print(e)
             return False
 
-    def get_all_product(self):
+    def get_all_product(self, gender_param, category_param, sort_by):
         try:
-            self.cur.execute("SELECT * FROM products")
+            if sort_by == 'title':
+                self.cur.execute(
+                    "SELECT * from products WHERE gender = ANY(%s) and category = ANY(%s) ORDER BY title", (
+                        gender_param, category_param))
+            elif sort_by == 'title desc':
+                self.cur.execute(
+                    "SELECT * from products WHERE gender = ANY(%s) and category = ANY(%s) ORDER BY title DESC ", (
+                        gender_param, category_param))
+            elif sort_by == 'cost':
+                self.cur.execute(
+                    "SELECT * from products WHERE gender = ANY(%s) and category = ANY(%s) ORDER BY cost", (
+                        gender_param, category_param))
+            elif sort_by == 'cost desc':
+                self.cur.execute(
+                    "SELECT * from products WHERE gender = ANY(%s) and category = ANY(%s) ORDER BY cost desc ", (
+                        gender_param, category_param))
+            else:
+                self.cur.execute(
+                    "SELECT * from products WHERE gender = ANY(%s) and category = ANY(%s)", (
+                        gender_param, category_param))
             res = self.cur.fetchall()
             return res
         except Exception as e:
@@ -73,6 +92,7 @@ class DataBase:
             print(e)
             return False
 
+
     def add_product(self, title, desc, gen, cat, cost, img_url):
         try:
             self.cur.execute("INSERT INTO products VALUES (%s, %s, %s, %s, %s, %s)",
@@ -80,6 +100,7 @@ class DataBase:
         except Exception as e:
             print(e)
             return False
+
 
     def edit_product(self, title, desc, gen, cat, cost, img_url, id):
         try:
@@ -92,12 +113,14 @@ class DataBase:
             print(e)
             return False
 
+
     def delete_product_by_id(self, id):
         try:
             self.cur.execute("DELETE FROM products WHERE id = '%s'" % id)
         except Exception as e:
             print(e)
             return False
+
 
     def get_all_orders(self, user_id):
         try:
@@ -118,6 +141,7 @@ class DataBase:
             print(e)
             return False
 
+
     def create_order(self, user_id):
         # TODO('сделать id serial')
         products, total = self.get_cart_with_total(user_id)
@@ -129,6 +153,7 @@ class DataBase:
             for _ in range(product[3]):
                 self.cur.execute("INSERT INTO purchases (product_id, order_id) "
                                  "VALUES (%s, %s)" % (product[0], last_id + 1))
+
 
     def get_all_products(self, user_id):
         try:
@@ -144,12 +169,11 @@ class DataBase:
                     res.append(tuple((*args, True)))
                 else:
                     res.append(tuple((*args, False)))
-            if not res:
-                return False
             return res
         except Exception as e:
             print(e)
             return False
+
 
     def get_all_favourites(self, user_id):
         try:
@@ -164,10 +188,12 @@ class DataBase:
             print(e)
             return False
 
+
     def is_product_favourite(self, product_id):
         self.cur.execute("SELECT * FROM favorites WHERE product_id = %s" % product_id)
         res = self.cur.fetchone()
         return bool(res)
+
 
     def add_to_favourite(self, user_id, product_id):
         try:
@@ -176,12 +202,14 @@ class DataBase:
         except Exception as e:
             print(e)
 
+
     def delete_from_favourite(self, user_id, product_id):
         try:
             self.cur.execute("DELETE FROM favorites "
                              "WHERE user_id = %s and product_id = %s" % (user_id, product_id))
         except Exception as e:
             print(e)
+
 
     def get_cart(self, user_id):
         try:
@@ -197,8 +225,10 @@ class DataBase:
             print(e)
             return False
 
+
     def clear_cart(self, user_id):
         self.cur.execute("DELETE FROM cart WHERE user_id = %s" % user_id)
+
 
     def get_cart_with_total(self, user_id):
         products = self.get_cart(user_id)
@@ -208,12 +238,14 @@ class DataBase:
                 total += amount * cost
         return products, total
 
+
     def add_to_cart(self, user_id, product_id):
         try:
             self.cur.execute("INSERT INTO cart (user_id, product_id) "
                              "VALUES (%s, %s)" % (user_id, product_id))
         except Exception as e:
             print(e)
+
 
     def delete_from_cart(self, user_id, product_id):
         try:
@@ -224,6 +256,7 @@ class DataBase:
         except Exception as e:
             print(e)
 
+
     def gen_prods(self):
         """Потом удалить"""
         for i in range(10):
@@ -231,12 +264,14 @@ class DataBase:
                              "values ('title%d', 'desc%d', 'gender%d', 'cat%d', '%d', 'img%d', '%d')"
                              % (i, i, i, i, i, i, i))
 
+
     def gen_orders(self):
         """Потом удалить"""
         for i in range(10):
             self.cur.execute("insert into orders (summa, user_id, id) "
                              "values ('%d', 1, '%d')"
                              % (i * 100, i))
+
 
     def gen_purchs(self):
         """Потом удалить"""
@@ -251,11 +286,19 @@ class DataBase:
                              "values ('%d', '%d')"
                              % (random.randint(0, 9), i))
 
+
     def update_names(self, user_id, first_name, last_name):
         try:
             print('updating')
             self.cur.execute(
                 "UPDATE users SET first_name='%s', last_name='%s' WHERE id=%s" % (first_name, last_name, user_id))
+        except Exception as e:
+            print(e)
+
+
+    def filter_by(self, sort_param, filter_param):
+        try:
+            self.cur.execute("")
         except Exception as e:
             print(e)
 
