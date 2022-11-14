@@ -37,7 +37,8 @@ def main_page():
     category_parameter = [request.args.get('category_parameter')]
     if category_parameter[0] is None:
         category_parameter = categories
-    products = db.get_all_product(gender_parameter, category_parameter, sort_parameter)
+    products = db.get_all_products(gender_parameter, category_parameter, sort_parameter)
+    products = [(*product, db.is_product_favourite(product[-1])) for product in products]
     context = {
         'title': 'Remova store',
         'categories': categories,

@@ -2,24 +2,28 @@
 {% block body %}
     <div class="container">
         {% if products %}
-            {% for id, title, description, amount, cost, image_url in products %}
-                <div class="card mb-4" style="width: 18rem;">
-                    <a href="{{ url_for('product', id=id) }}" class="link-dark"
-                       style="text-decoration: none;">
-                        <img src="{{ image_url }}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ title }}</h5>
-                            <p class="card-text mb-4">{{ description }}</p>
-                            <a href="{{ url_for('delete_from_cart', product_id=id) }}?url_from={{ url_for('cart_page') }}"
-                               class="btn btn-secondary">-</a>
-                            {{ amount }}
-                            <a href="{{ url_for('add_to_cart', product_id=id) }}?url_from={{ url_for('cart_page') }}"
-                               class="btn btn-secondary">+</a>
-                            <p class="card-text mb-4">Price: {{ cost * amount }}</p>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 row-cols-md-4">
+                {% for id, title, description, amount, cost, image_url in products %}
+                    <div class="col">
+                        <div class="card mb-4" style="width: 18rem;">
+                            <a href="{{ url_for('product', id=id) }}" class="link-dark"
+                               style="text-decoration: none;">
+                                <img src="{{ image_url }}" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ title }}</h5>
+                                    <p class="card-text mb-4">{{ description }}</p>
+                                    <a href="{{ url_for('delete_from_cart', product_id=id) }}?url_from={{ url_for('cart_page') }}"
+                                       class="btn btn-secondary">-</a>
+                                    {{ amount }}
+                                    <a href="{{ url_for('add_to_cart', product_id=id) }}?url_from={{ url_for('cart_page') }}"
+                                       class="btn btn-secondary">+</a>
+                                    <p class="card-text mb-4">Price: {{ cost * amount }}</p>
+                                </div>
+                            </a>
                         </div>
-                    </a>
-                </div>
-            {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
             <p class="fs-4 py-5">Total: {{ total }}</p>
             <a href="{{ url_for('order_confirmation') }}"
                class="btn btn-secondary">Confirm order</a>
