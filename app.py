@@ -278,12 +278,6 @@ def login_page():
     return render_template('login_page.html', **context)
 
 
-@app.route('/gender/<string:gender>')
-def sex_page(gender):
-    context = {
-        'title': gender
-    }
-    return render_template('main_page.html', **context)
 
 
 if __name__ == '__main__':
