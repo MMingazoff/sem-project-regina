@@ -2,34 +2,39 @@
 {% block body %}
     <div class="container">
         <h1 class="mb-4">Orders</h1>
-        {% for order_num, create_date, total, products in orders %}
-            <div class="card mb-4" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Order #{{ order_num }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">order date: {{ create_date }}</h6>
-                    <p class="card-text">
-                        {% for title, amount, price, image_url, id in products %}
-                            <div class="row g-0">
-                                <div class="col-md-4">
-                                    <img src="{{ image_url }}"
-                                         class="card-img-top"
-                                         style="height: 50px; width: 50px; object-fit: contain">
-                                </div>
-                                <div class="col-md-7">
-                                    <div class="card-body">
-                                        <a href="{{ url_for('product', id=id) }}"
-                                           class="text-decoration-none card-title fs-5">{{ title }}</a>
-                                        <p class="card-text mb-0">{{ amount }} x {{ price }}</p>
-                                        <p class="card-text mb-0"><small class="text-muted">{{ amount * price }}</small>
-                                        </p>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 row-cols-md-4">
+            {% for order_num, create_date, total, products in orders %}
+                <div class="col">
+                    <div class="card mb-4" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Order #{{ order_num }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">order date: {{ create_date }}</h6>
+                            <p class="card-text">
+                                {% for title, amount, price, image_url, id in products %}
+                                    <div class="row g-0">
+                                        <div class="col-md-4">
+                                            <img src="{{ image_url }}"
+                                                 class="card-img-top"
+                                                 style="height: 50px; width: 50px; object-fit: contain">
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="card-body">
+                                                <a href="{{ url_for('product', id=id) }}"
+                                                   class="text-decoration-none card-title fs-5">{{ title }}</a>
+                                                <p class="card-text mb-0">{{ amount }} x {{ price }}</p>
+                                                <p class="card-text mb-0"><small
+                                                        class="text-muted">{{ amount * price }}</small>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    <p class="card-text mb-0">Total: {{ total }}</p>
-                    </p>
+                                {% endfor %}
+                            <p class="card-text mb-0">Total: {{ total }}</p>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

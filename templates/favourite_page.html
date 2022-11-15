@@ -1,23 +1,39 @@
 {% extends 'base.html' %}
 {% block body %}
-    <div class="container">
-        {% if products %}
-            {% for id, title, description in products %}
-                <div class="card mb-4" style="width: 18rem;">
-                    <a href="{{ url_for('product', id=id) }}" class="link-dark"
-                       style="text-decoration: none;">
-                        <img src=".." class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ title }}</h5>
-                            <p class="card-text mb-4">{{ description }}</p>
-                            <a href="{{ url_for('delete_from_favourite', product_id=id) }}?url_from={{ url_for('favourite_page') }}"
-                               class="btn btn-danger fav">delete from fav</a>
-                        </div>
-                    </a>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p class="fs-4 py-5">You have no favourite products</p>
-        {% endif %}
+<div class="container">
+    {% if products %}
+    <div class="album py-5">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 row-cols-md-4">
+                {% for product in products %}
+                    <div class="col">
+                        <a href="{{ url_for('product', id=product[6]) }}" class="link-dark"
+                           style="text-decoration: none;">
+                            <div class="card shadow-sm">
+                                <div style="overflow: hidden; height: 300px;">
+                                    <img src="{{ product[5] }}"
+                                         alt="{{ product[0] }}"
+                                         style="width: 100%; height: 100%; object-fit: cover">
+                                </div>
+                                <center>
+                                    <div class="card-body" style="background-color: lightgray">
+                                        <p class="card-text">{{ product[0] }}</p>
+                                        <p class="card-text">{{ product[4] }}</p>
+                                        <div style="padding-top: 10px;">
+                                            <a href="{{ url_for('delete_from_favourite', product_id=product[6]) }}?url_from={{ url_for('favourite_page') }}"
+                                               class="btn btn-danger">delete from fav</a>
+                                        </div>
+                                    </div>
+                                </center>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+    {% else %}
+    <p class="fs-4 py-5">You have no favourite products</p>
+    {% endif %}
+</div>
 {% endblock %}
