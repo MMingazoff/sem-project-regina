@@ -61,6 +61,17 @@ def product(id):
     return render_template('product.html', **context)
 
 
+@app.route('/random_product')
+def get_random_product():
+    product = db.get_random_product()
+    product = list(product)
+    product.append(db.is_product_favourite(product[-1]))
+    context = {
+        'product': tuple(product),
+    }
+    return render_template('random_product.html', **context)
+
+
 @app.route('/add_product', methods=['GET', 'POST'])
 @login_required
 def add_product():

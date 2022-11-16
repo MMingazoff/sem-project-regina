@@ -92,6 +92,10 @@ class DataBase:
             print(e)
             return False
 
+    def get_random_product(self):
+        self.cur.execute("SELECT * FROM products ORDER BY random() LIMIT 1")
+        return self.cur.fetchone()
+
     def add_product(self, title, desc, gen, cat, cost, img_url):
         try:
             self.cur.execute("INSERT INTO products VALUES (%s, %s, %s, %s, %s, %s)",

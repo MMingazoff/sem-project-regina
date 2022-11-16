@@ -1,9 +1,9 @@
 import psycopg2
 
 con = psycopg2.connect(
-    dbname='remova_store',
+    dbname='regina',
     user='postgres',
-    password='$ur psw',
+    password='marat2003',
     host='localhost',
     port='5432'
 )
