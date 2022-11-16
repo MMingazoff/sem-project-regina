@@ -33,7 +33,7 @@ class DataBase:
 
     def check_user_email_phone(self, email, phone):
         try:
-            self.cur.execute("SELECT * FROM users WHERE email = '%s' or phone_num = '%s'" % (email, phone))
+            self.cur.execute("SELECT * FROM users WHERE email = %s or phone_num = %s", (email, phone))
             if self.cur.fetchone() is None:
                 return True
             return False
@@ -43,7 +43,7 @@ class DataBase:
 
     def get_user_by_email(self, email):
         try:
-            self.cur.execute("SELECT * FROM users WHERE email = '%s'" % email)
+            self.cur.execute("SELECT * FROM users WHERE email = %s", [email])
             res = self.cur.fetchone()
             if not res:
                 return False
@@ -82,7 +82,7 @@ class DataBase:
 
     def get_product_by_id(self, id):
         try:
-            self.cur.execute("SELECT * FROM products WHERE id = '%s'" % id)
+            self.cur.execute("SELECT * FROM products WHERE id = %s", [id])
             res = self.cur.fetchone()
             if not res:
                 return False
@@ -117,14 +117,14 @@ class DataBase:
 
     def delete_product_by_id(self, id):
         try:
-            self.cur.execute("DELETE FROM products WHERE id = '%s'" % id)
+            self.cur.execute("DELETE FROM products WHERE id = %s", id)
         except Exception as e:
             print(e)
             return False
 
     def get_all_orders(self, user_id):
         try:
-            self.cur.execute("SELECT * FROM orders WHERE user_id = %s" % user_id)
+            self.cur.execute("SELECT * FROM orders WHERE user_id = %s", user_id)
             orders = self.cur.fetchall()
             res = []
             for create_date, total, _, id in orders:
@@ -132,7 +132,7 @@ class DataBase:
                     "SELECT title, amount, cost, image_url, id FROM products JOIN "
                     "(SELECT product_id, order_id, count(*) amount "
                     "FROM purchases GROUP BY product_id, order_id) p ON p.product_id = products.id "
-                    "WHERE order_id = %s" % id
+                    "WHERE order_id = %s", [id]
                 )
                 products = self.cur.fetchall()
                 print(products)
@@ -146,19 +146,19 @@ class DataBase:
         # TODO('сделать id serial')
         products, total = self.get_cart_with_total(user_id)
         self.cur.execute("INSERT INTO orders (summa, user_id) "
-                         "VALUES (%s, %s)" % (total, user_id))
+                         "VALUES (%s, %s)", (total, user_id))
         self.cur.execute("SELECT id FROM orders ORDER BY id DESC")
         order_id = self.cur.fetchone()[0]
         for product in products:
             for _ in range(product[3]):
                 self.cur.execute("INSERT INTO purchases (product_id, order_id) "
-                                 "VALUES (%s, %s)" % (product[0], order_id))
+                                 "VALUES (%s, %s)", (product[0], order_id))
 
     def get_all_favourites(self, user_id):
         try:
             self.cur.execute("SELECT title, description, gender, category, cost, image_url, id FROM products JOIN favorites f "
                              "ON products.id = f.product_id "
-                             "WHERE user_id = %s" % user_id)
+                             "WHERE user_id = %s", user_id)
             res = self.cur.fetchall()
             if not res:
                 return False
@@ -168,21 +168,21 @@ class DataBase:
             return False
 
     def is_product_favourite(self, product_id):
-        self.cur.execute("SELECT * FROM favorites WHERE product_id = %s" % product_id)
+        self.cur.execute("SELECT * FROM favorites WHERE product_id = %s", product_id)
         res = self.cur.fetchone()
         return bool(res)
 
     def add_to_favourite(self, user_id, product_id):
         try:
             self.cur.execute("INSERT INTO favorites (user_id, product_id) "
-                             "VALUES (%s, %s)" % (user_id, product_id))
+                             "VALUES (%s, %s)", (user_id, product_id))
         except Exception as e:
             print(e)
 
     def delete_from_favourite(self, user_id, product_id):
         try:
             self.cur.execute("DELETE FROM favorites "
-                             "WHERE user_id = %s and product_id = %s" % (user_id, product_id))
+                             "WHERE user_id = %s and product_id = %s", (user_id, product_id))
         except Exception as e:
             print(e)
 
@@ -191,7 +191,7 @@ class DataBase:
             self.cur.execute("SELECT id, title, description, amount, cost, image_url FROM products JOIN "
                              "(SELECT user_id, product_id, count(*) amount FROM cart GROUP BY user_id, product_id) c "
                              "ON products.id = c.product_id "
-                             "WHERE user_id = %s" % user_id)
+                             "WHERE user_id = %s", [user_id])
             res = self.cur.fetchall()
             if not res:
                 return False
@@ -201,7 +201,7 @@ class DataBase:
             return False
 
     def clear_cart(self, user_id):
-        self.cur.execute("DELETE FROM cart WHERE user_id = %s" % user_id)
+        self.cur.execute("DELETE FROM cart WHERE user_id = %s", [user_id])
 
     def get_cart_with_total(self, user_id):
         products = self.get_cart(user_id)
@@ -214,7 +214,7 @@ class DataBase:
     def add_to_cart(self, user_id, product_id):
         try:
             self.cur.execute("INSERT INTO cart (user_id, product_id) "
-                             "VALUES (%s, %s)" % (user_id, product_id))
+                             "VALUES (%s, %s)", (user_id, product_id))
         except Exception as e:
             print(e)
 
@@ -223,7 +223,7 @@ class DataBase:
             self.cur.execute("DELETE FROM cart "
                              "WHERE user_id = %s and product_id = %s "
                              "and ctid = (select min(ctid) from cart "
-                             "where user_id = %s and product_id = %s);" % (user_id, product_id, user_id, product_id))
+                             "where user_id = %s and product_id = %s);", (user_id, product_id, user_id, product_id))
         except Exception as e:
             print(e)
 
@@ -231,7 +231,7 @@ class DataBase:
         try:
             print('updating')
             self.cur.execute(
-                "UPDATE users SET first_name='%s', last_name='%s' WHERE id=%s" % (first_name, last_name, user_id))
+                "UPDATE users SET first_name='%s', last_name='%s' WHERE id=%s", (first_name, last_name, user_id))
         except Exception as e:
             print(e)
 
