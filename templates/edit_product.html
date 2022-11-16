@@ -2,19 +2,19 @@
 
 {% block body %}
     <form class="registration-form" method="post">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input type="text" id="title" name="title" class="form-control" required="required"
                    value="{{ product[0] }}">
         </div>
         <br>
-        <div class="form-group">
+        <div class="mb-3">
             <label for="description" class="form-label">Description</label>
             <textarea id="description" name="description" class="form-control"
                       required="required" rows="5">{{ product[1] }}</textarea>
         </div>
         <br>
-        <div class="form-group">
+        <div class="mb-3">
             <label for="gender" class="form-label">Gender</label>
             <select id="gender" name="gender" class="form-control" required="required">
                 {% if product[2] == 'male' %}
@@ -27,9 +27,8 @@
             </select>
         </div>
         <br>
-        <div class="form-group">
+        <div class="mb-3p">
             <label for="category" class="form-label">Category</label>
-            {#Узнать, какие категории нужны, и откуда их брать#}
             <select id="category" name="category" class="form-control" required="required">
                 {% for category in categories %}
                     {% if category == product[3] %}
@@ -42,13 +41,13 @@
             </select>
         </div>
         <br>
-        <div class="form-group">
+        <div class="mb-3">
             <label for="cost" class="form-label">Cost</label>
             <input type="number" step="0.01" min="0" id="cost" name="cost" class="form-control" required="required"
                    value="{{ product[4] }}">
         </div>
         <br>
-        <div class="form-group"><label for="img_url" class="form-label">Image url</label>
+        <div class="mb-3"><label for="img_url" class="form-label">Image url</label>
             <input type="url" id="img_url" class="form-control" name="img_url" value="{{ product[5] }}">
         </div>
         <hr>
@@ -56,4 +55,6 @@
             <button class="btn btn-primary" type="submit">Submit</button>
         </center>
     </form>
+    <link href="../../static/css/mycss.css" rel="stylesheet">
+
 {% endblock %}

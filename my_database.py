@@ -5,9 +5,9 @@ import psycopg2
 class DataBase:
     def __init__(self):
         self.con = psycopg2.connect(
-            dbname='regina',
+            dbname='remova_store',
             user='postgres',
-            password='marat2003',
+            password='####',
             host='localhost',
             port='5432'
         )
@@ -34,9 +34,9 @@ class DataBase:
     def check_user_email_phone(self, email, phone):
         try:
             self.cur.execute("SELECT * FROM users WHERE email = '%s' or phone_num = '%s'" % (email, phone))
-            if not self.cur.fetchone():
-                return False
-            return True
+            if self.cur.fetchone() is None:
+                return True
+            return False
         except Exception as e:
             print(e)
             return False
